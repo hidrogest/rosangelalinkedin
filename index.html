@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auditoria de Perfil - Hidrogest (Rosângela)</title>
+  
+  <!-- Importando o Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Importando React e ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Importando o Babel para rodar JSX no navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Estilos Customizados -->
+  <style>
+    @keyframes pulse-subtle {
+      0%, 100% { border-color: rgba(248, 113, 113, 0.4); background-color: rgba(254, 226, 226, 0.4); }
+      50% { border-color: rgba(239, 68, 68, 1); background-color: rgba(254, 226, 226, 0.8); }
+    }
+    .animate-pulse-subtle { 
+      animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; 
+    }
+  </style>
+</head>
+<body class="bg-[#f3f2ef]">
+
+  <!-- Elemento onde o React será montado -->
+  <div id="root"></div>
+
+  <!-- Código da Aplicação -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // --- ÍCONES SVG ---
+    const AlertCircle = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>;
+    const CheckCircle2 = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+    const MapPin = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>;
+    const Mail = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>;
+    const Phone = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
+    const LinkIcon = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>;
+    const Building2 = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>;
+    const ChevronRight = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>;
+    const Info = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
+    const ShieldCheck = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>;
+    const XCircle = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>;
+    const DownloadIcon = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>;
+
+    function App() {
+      const [isOptimized, setIsOptimized] = useState(false);
+      const [animateProgress, setAnimateProgress] = useState(false);
+
+      // FOTOS DE PERFIL (Avatar) da Rosângela
+      const imgBefore = "https://drive.google.com/thumbnail?id=13XuqTXyPS6Ny2qN29QFF22F6av_zH9D2&sz=w800";
+      const imgAfter = "https://drive.google.com/thumbnail?id=1RStFhDKm_oV4Z4sjh3O5eVA9sM8ebXX2&sz=w800";
+      const imgAfterDownload = "https://drive.google.com/uc?export=download&id=1RStFhDKm_oV4Z4sjh3O5eVA9sM8ebXX2";
+      
+      // IMAGENS DE CAPA (Banner) - Mantendo o padrão Hidrogest
+      const bgBefore = "https://drive.google.com/thumbnail?id=1dKA-mZ1ITB9ZTvnkd8wqlCN3q0HdJP4h&sz=w1200";
+      const bgAfter = "https://drive.google.com/thumbnail?id=1KX8LdZZYdaUX5o-I8ii6PVqpvsntKnGq&sz=w1200";
+      const bgAfterDownload = "https://drive.google.com/uc?export=download&id=1KX8LdZZYdaUX5o-I8ii6PVqpvsntKnGq";
+
+      // LOGO DA EMPRESA
+      const logoHidrogest = "https://drive.google.com/thumbnail?id=1aWt-ZBZIvBdviJ3hoYVExMUoQlFEt15O&sz=w200";
+
+      const fallbackAvatar = "https://ui-avatars.com/api/?name=Rosangela+Gurgel&size=200&background=0a66c2&color=fff";
+
+      useEffect(() => {
+        setAnimateProgress(false);
+        const timer = setTimeout(() => setAnimateProgress(true), 100);
+        return () => clearTimeout(timer);
+      }, [isOptimized]);
+
+      const Highlight = ({ condition, isFixed, label, description, children, block = false, hideFixedBorder = false }) => {
+        if (!condition) return <>{children}</>;
+
+        const baseStyles = block ? 'block' : 'inline-block';
+        
+        const fixedStyles = hideFixedBorder 
+          ? 'border-transparent bg-transparent'
+          : 'border-green-400 bg-green-50/50 shadow-[0_0_15px_rgba(74,222,128,0.2)]';
+          
+        const errorStyles = 'border-red-400 bg-red-50 animate-pulse-subtle shadow-[0_0_15px_rgba(248,113,113,0.3)]';
+
+        return (
+          <div className={`relative group ${baseStyles} mb-1`}>
+            <div className={`
+              ${baseStyles} 
+              border-2 border-dashed rounded-lg p-1.5 -m-1.5 transition-all duration-700 ease-in-out
+              ${isFixed ? fixedStyles : errorStyles}
+            `}>
+              {children}
+            </div>
+            
+            <div className={`
+              absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 rounded-lg shadow-xl
+              transform transition-all duration-300 ease-out origin-bottom
+              opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none
+              ${isFixed ? 'bg-green-800 text-white' : 'bg-red-700 text-white'}
+            `}>
+              <div className="flex items-start gap-2">
+                {isFixed ? <CheckCircle2 className="shrink-0 mt-0.5" size={16} /> : <AlertCircle className="shrink-0 mt-0.5" size={16} />}
+                <div>
+                  <p className="font-bold text-sm mb-1">{label}</p>
+                  {description && <p className="text-xs opacity-90 leading-tight">{description}</p>}
+                </div>
+              </div>
+              <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 ${isFixed ? 'bg-green-800' : 'bg-red-700'}`}></div>
+            </div>
+          </div>
+        );
+      };
+
+      const checklistItems = [
+        { id: 1, text: "Padronização da Foto de Perfil", done: isOptimized },
+        { id: 2, text: "Inclusão de Banner Corporativo", done: isOptimized },
+        { id: 3, text: "Atualização da Empresa Atual (Hidrogest)", done: isOptimized },
+        { id: 4, text: "Adequação do Título e Resumo à Senioridade", done: isOptimized },
+        { id: 5, text: "Visibilidade de Contatos", done: isOptimized },
+      ];
+
+      return (
+        <div className="min-h-screen font-sans pb-16 selection:bg-blue-200">
+          
+          {/* DASHBOARD DE AUDITORIA (HEADER FIXO) */}
+          <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-md">
+            <div className="max-w-5xl mx-auto px-4 py-4">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                
+                <div className="flex items-center gap-3">
+                  <div className="bg-[#0B3B59] text-white p-2.5 rounded-lg shadow-sm">
+                    <ShieldCheck size={24} />
+                  </div>
+                  <div>
+                    <h1 className="font-bold text-xl text-gray-900 leading-tight">Auditoria de Perfil</h1>
+                    <p className="text-sm text-gray-500">Colaborador: Rosângela Gurgel Machado</p>
+                  </div>
+                </div>
+
+                <div className="flex-1 max-w-md w-full px-4">
+                  <div className="flex justify-between text-sm mb-1.5 font-medium">
+                    <span className="text-gray-600">Força do Perfil</span>
+                    <span className={isOptimized ? "text-green-600" : "text-amber-600"}>
+                      {isOptimized ? "Campeão (100%)" : "Básico (30%)"}
+                    </span>
+                  </div>
+                  <div className="h-2.5 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-1000 ease-out relative ${
+                        isOptimized ? "bg-green-500" : "bg-amber-400"
+                      }`}
+                      style={{ width: animateProgress ? (isOptimized ? "100%" : "30%") : "0%" }}
+                    >
+                      <div className="absolute top-0 left-0 bottom-0 right-0 bg-white/20 animate-pulse"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200 shadow-inner">
+                  <button
+                    onClick={() => setIsOptimized(false)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 ${
+                      !isOptimized ? 'bg-white shadow-sm text-red-600 ring-1 ring-gray-200' : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    <XCircle size={16} className={!isOptimized ? "animate-pulse" : ""} />
+                    Perfil Atual
+                  </button>
+                  <button
+                    onClick={() => setIsOptimized(true)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 ${
+                      isOptimized ? 'bg-[#0a66c2] shadow-md text-white ring-1 ring-blue-600' : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    <CheckCircle2 size={16} />
+                    Otimizado
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="max-w-5xl mx-auto mt-8 px-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <div className="lg:col-span-1 space-y-4">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sticky top-28">
+                <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Info size={18} className="text-[#0B3B59]" />
+                  Itens Analisados
+                </h3>
+                
+                <ul className="space-y-3">
+                  {checklistItems.map(item => (
+                    <li key={item.id} className="flex items-start gap-3 transition-all duration-300">
+                      <div className={`mt-0.5 rounded-full transition-colors duration-300 ${item.done ? 'text-green-500' : 'text-gray-300'}`}>
+                        <CheckCircle2 size={18} />
+                      </div>
+                      <span className={`text-sm ${item.done ? 'text-gray-800 font-medium' : 'text-gray-500'}`}>
+                        {item.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className={`mt-6 p-4 rounded-lg text-sm transition-all duration-500 ${
+                  isOptimized ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-amber-50 border border-amber-200 text-amber-800'
+                }`}>
+                  <p className="font-bold mb-1">{isOptimized ? 'Excelente!' : 'Ação Necessária:'}</p>
+                  <p>
+                    {isOptimized 
+                      ? 'O perfil agora reflete a vasta experiência e senioridade (Master) da profissional, fortalecendo a autoridade da Hidrogest.' 
+                      : 'O perfil atual está desatualizado, não cita a Hidrogest e possui informações que não refletem o nível "Master" da profissional.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-3 space-y-4 relative">
+              
+              <div className="absolute -right-2 -top-6 text-sm font-bold text-gray-400 flex items-center gap-1 uppercase tracking-wider">
+                Visão Institucional / Clientes <ChevronRight size={14}/>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative transition-all duration-500 hover:shadow-md">
+                
+                <Highlight 
+                  condition={true} 
+                  isFixed={isOptimized} 
+                  hideFixedBorder={true}
+                  label={isOptimized ? "Banner Padrão Adicionado" : "Falta de Identidade Visual"} 
+                  description={isOptimized ? "O banner corporativo da Hidrogest reforça a autoridade da marca no mercado." : "A capa atual não reflete o nível de excelência da profissional e da empresa."}
+                  block
+                >
+                  <div className="h-48 w-full relative overflow-hidden group/banner bg-gray-100">
+                    {/* Capa Antiga */}
+                    <img 
+                      src={bgBefore} 
+                      alt="Capa Antiga" 
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isOptimized ? 'opacity-0' : 'opacity-100'}`}
+                    />
+                    
+                    {/* Nova Capa (Hidrogest) */}
+                    <img 
+                      src={bgAfter} 
+                      alt="Capa Hidrogest" 
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isOptimized ? 'opacity-100' : 'opacity-0'}`}
+                    />
+
+                    {/* Botão de Download */}
+                    <div className={`absolute top-4 right-4 transition-all duration-500 z-10 ${isOptimized ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
+                      <a 
+                        href={bgAfterDownload} 
+                        download="Capa_Hidrogest.jpg"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-white/95 hover:bg-white text-[#0B3B59] px-4 py-2 rounded-full font-bold text-sm shadow-lg transition-all border border-transparent hover:border-[#0B3B59] hover:scale-105"
+                        title="Baixar nova capa"
+                      >
+                        <DownloadIcon size={16} />
+                        Baixar Capa
+                      </a>
+                    </div>
+                  </div>
+                </Highlight>
+
+                <div className="px-6 pb-6 relative">
+                  
+                  {/* Foto de Perfil usando margem negativa para manter o fluxo do documento sem tampar o texto */}
+                  <div className="relative -mt-20 sm:-mt-24 mb-3 z-20 inline-block">
+                    <Highlight 
+                      condition={true} 
+                      isFixed={isOptimized} 
+                      hideFixedBorder={true}
+                      label={isOptimized ? "Foto Padrão Corporativa" : "Foto Fora do Padrão Institucional"}
+                      description={isOptimized ? "Iluminação clara, fundo neutro, veste condizente com a empresa." : "A foto atual, tirada em um evento, não transmite a padronização e a senioridade institucional esperadas de uma consultora Master."}
+                    >
+                      <div className="w-36 h-36 sm:w-40 sm:h-40 rounded-full border-4 border-white bg-white shadow-md relative group/photo">
+                        <img 
+                          src={isOptimized ? imgAfter : imgBefore} 
+                          alt="Foto de perfil" 
+                          className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover/photo:scale-105"
+                          onError={(e) => { e.target.src = fallbackAvatar }}
+                        />
+                        <div className="absolute inset-0 ring-1 ring-black/10 rounded-full pointer-events-none"></div>
+                        
+                        {/* Botão de Download da Foto de Perfil */}
+                        <div className={`absolute bottom-1 right-1 transition-all duration-500 z-30 ${isOptimized ? 'opacity-100 scale-100' : 'opacity-0 scale-50 pointer-events-none'}`}>
+                          <a 
+                            href={imgAfterDownload} 
+                            download="Foto_Perfil_Rosangela_Hidrogest.jpg"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center bg-white text-[#0B3B59] w-10 h-10 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 hover:scale-110 transition-all"
+                            title="Baixar foto de perfil"
+                          >
+                            <DownloadIcon size={18} />
+                          </a>
+                        </div>
+                      </div>
+                    </Highlight>
+                  </div>
+
+                  {/* Fluxo natural */}
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                    <div className="max-w-xl">
+                      <Highlight 
+                        condition={!isOptimized || isOptimized} 
+                        isFixed={isOptimized} 
+                        label={isOptimized ? "Nome e Acentuação Corretos" : "Nome Incompleto e Sem Acento"}
+                        description={isOptimized ? "Nome perfeitamente alinhado à apresentação formal da empresa, incluindo o sobrenome 'Machado'." : "Falta o acento em 'Rosângela' e o último sobrenome."}
+                      >
+                        <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+                          {isOptimized ? "Rosângela Moreira Gurgel Machado" : "Rosangela Moreira Gurgel"}
+                        </h1>
+                      </Highlight>
+
+                      <div className="text-[17px] text-gray-700 mt-1.5 leading-snug">
+                        <Highlight 
+                          condition={!isOptimized || isOptimized} 
+                          isFixed={isOptimized} 
+                          label={isOptimized ? "Título Estratégico (Senioridade)" : "Título com Erro Ortográfico e Genérico"}
+                          description={isOptimized ? "Destaca a senioridade (Master) e as áreas chaves de atuação." : "A palavra 'experiencia' está sem acento e 'engenheira' com letra minúscula não passa credibilidade."}
+                          block
+                        >
+                          {isOptimized 
+                            ? "Engenheira Ambiental Master | Especialista em Gestão Ambiental, Resíduos Sólidos e Áreas Contaminadas | Monitoramento e Segurança de Barragens" 
+                            : "Consultora - engenheira com experiencia em gestão de resíduos e áreas contaminadas"}
+                        </Highlight>
+                      </div>
+
+                      <div className="text-gray-500 text-sm mt-3 flex items-center gap-1.5 font-medium">
+                        <MapPin size={16} className="text-gray-400" /> Belo Horizonte, Minas Gerais, Brasil
+                      </div>
+                      
+                      <div className="mt-3">
+                        <Highlight 
+                          condition={true} 
+                          isFixed={isOptimized} 
+                          hideFixedBorder={true}
+                          label={isOptimized ? "Contatos Disponíveis" : "Apenas E-mail Visível"}
+                          description={isOptimized ? "Adição do telefone facilita o networking imediato de clientes institucionais." : "O telefone de contato estava ausente no perfil."}
+                          block
+                        >
+                          {isOptimized ? (
+                            <div className="flex flex-wrap gap-4 text-sm font-semibold text-[#0a66c2] bg-blue-50/50 p-2 rounded-lg border border-blue-100 inline-flex">
+                              <span className="flex items-center gap-1.5 hover:underline cursor-pointer"><Mail size={16} /> rosangela.gurgel@yahoo.com.br</span>
+                              <span className="flex items-center gap-1.5 hover:underline cursor-pointer"><Phone size={16} /> (31) 99122-9154</span>
+                            </div>
+                          ) : (
+                            <span className="text-sm font-semibold text-[#0a66c2] hover:underline cursor-pointer inline-flex items-center gap-1">
+                              rosangela.gurgel@yahoo.com.br <LinkIcon size={14}/>
+                            </span>
+                          )}
+                        </Highlight>
+                      </div>
+                    </div>
+
+                    <div className="hidden md:flex flex-col gap-3 items-start sm:items-end w-56 shrink-0 mt-2">
+                      <Highlight 
+                        condition={!isOptimized || isOptimized} 
+                        isFixed={isOptimized} 
+                        hideFixedBorder={true}
+                        label={isOptimized ? "Empresa Atual Inserida" : "Empresa Oculta"}
+                        description={isOptimized ? "A Hidrogest ganha força associando profissionais Master à sua marca." : "O perfil atualizado não mostra a Hidrogest como empresa atual."}
+                        block
+                      >
+                        {isOptimized ? (
+                          <div className="flex items-center gap-3 hover:underline cursor-pointer w-full justify-end">
+                            <span className="text-[15px] font-semibold text-gray-900 text-right leading-tight">Hidrogest Engenharia e Consultoria</span>
+                            <img src={logoHidrogest} alt="Hidrogest" className="w-10 h-10 shrink-0 object-contain bg-white rounded-md shadow-sm border border-gray-100" />
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3 w-full justify-end opacity-50">
+                            <span className="text-[15px] font-medium text-gray-500 text-right leading-tight">Sem empresa atual</span>
+                            <div className="w-10 h-10 shrink-0 bg-gray-200 border border-gray-300 rounded-md flex items-center justify-center shadow-sm"></div>
+                          </div>
+                        )}
+                      </Highlight>
+                      <div className="flex items-center gap-3 hover:underline cursor-pointer w-full justify-end">
+                        <span className="text-[15px] font-semibold text-gray-900 text-right leading-tight">Universidade Federal de Minas Gerais</span>
+                        <div className="w-10 h-10 shrink-0 bg-gray-100 border border-gray-200 rounded-md flex items-center justify-center text-xl shadow-sm">🏫</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Sobre</h2>
+                <div className="text-[15px] text-gray-800 space-y-4 leading-relaxed">
+                  <Highlight 
+                    condition={!isOptimized || isOptimized} 
+                    isFixed={isOptimized} 
+                    label={isOptimized ? "Resumo Completo e Imponente" : "Resumo Extremamente Curto e com Erros"}
+                    description={isOptimized ? "Valoriza as mais de 4 décadas de experiência, o mestrado e as qualificações de peso." : "Muito breve, com erros ortográficos ('experiencia', 'publica') e não vende a grande profissional que ela é."}
+                    block
+                  >
+                    {isOptimized ? (
+                      <div className="space-y-3">
+                        <p>Engenheira Civil e Ambiental com vasta trajetória e Mestre em Engenharia Sanitária, Meio Ambiente e Recursos Hídricos pela UFMG. Atuo como Analista Ambiental e Engenheira Master, unindo profundo conhecimento técnico à proposição de políticas públicas e diretrizes sustentáveis.</p>
+                        <p>Especialista em Gestão Ambiental, Resíduos Sólidos (Urbanos, Industriais e de Mineração), Gerenciamento de Áreas Contaminadas e Gestão de Segurança de Barragens. Lidero e coordeno estudos de alta complexidade, incluindo monitoramento hidrossedimentológico de grandes bacias e adequações regulatórias essenciais para grandes players dos setores energético e minerário.</p>
+                        <p>Com forte bagagem no setor público e privado, coordenei programas estaduais de referência (como o Programa Solos de Minas - FEAM e Gestão de Barragens de Resíduos), contribuindo ativamente para a segurança e conformidade ambiental no estado de Minas Gerais.</p>
+                      </div>
+                    ) : (
+                      <p>Disponibilizar a <span className="text-red-600 font-bold bg-red-100 px-1 rounded">experiencia</span> adquirida no setor <span className="text-red-600 font-bold bg-red-100 px-1 rounded">publica</span>, da atuação técnica à proposição de diretrizes e políticas públicas que envolvem a gestão ambiental</p>
+                    )}
+                  </Highlight>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-8">Experiência</h2>
+
+                {/* Experiência HIDROGEST - Só aparece no Otimizado pois não tinha no antigo */}
+                {isOptimized && (
+                  <div className="flex gap-4">
+                    <img src={logoHidrogest} alt="Hidrogest" className="shrink-0 w-12 h-12 object-contain bg-white shadow-sm rounded-md border border-gray-100 mt-1 z-10 relative" />
+                    <div className="flex-1 pb-8 relative">
+                      <div className="absolute top-12 bottom-0 left-[-38px] w-0.5 bg-gray-200"></div>
+                      
+                      <Highlight 
+                        condition={true} 
+                        isFixed={true} 
+                        hideFixedBorder={true}
+                        label="Nova Experiência Adicionada"
+                        description="O perfil dela estava abandonado desde 2012. Agora mostra a atuação de peso na Hidrogest."
+                      >
+                        <h3 className="text-[17px] font-bold text-gray-900">Engenheira Ambiental Master Sênior</h3>
+                      </Highlight>
+                      <div className="text-[15px] text-gray-900 font-medium mt-0.5">HIDROGEST ENGENHARIA E CONSULTORIA LTDA.</div>
+                      <div className="text-[15px] text-gray-500 mt-1">fev de 2019 - o momento</div>
+                      <div className="text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
+                      
+                      <div className="mt-4 text-[15px] text-gray-800 leading-relaxed space-y-3">
+                        <p>Atuação técnica sênior em grandes projetos de monitoramento e gestão ambiental. Principais atividades e coordenações:</p>
+                        <ul className="list-disc pl-5 space-y-1.5 marker:text-gray-400">
+                          <li>Elaboração de relatórios técnicos de monitoramento hidrossedimentológico do rio Paraopeba, abrangendo 13 estações e mais de 690 medições.</li>
+                          <li>Monitoramento qualitativo e quantitativo em reservatórios de água e rios para o setor energético e minerário.</li>
+                          <li>Elaboração de relatórios técnicos de implantação, operação e monitoramento para a Fundação Renova e Dique S4 SAMARCO.</li>
+                          <li>Definição e atualização de Curva Cota x Área x Volume para grandes reservatórios (Vale Fertilizantes, Votorantim Metais, UHE Guilman Amorim, entre outras).</li>
+                          <li>Definição de curva-chave de sedimento para UHE Funil e complexos PCH Juruena.</li>
+                          <li>Elaboração de Relatórios de monitoramento em atendimento à Resolução Conjunta ANA/ANEEL para múltiplas PCHs.</li>
+                          <li>Consultoria em Gestão de Resíduos Sólidos Urbanos para complexos minerários (Anglo American).</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Experiência CONSULTORIA */}
+                <div className="flex gap-4">
+                  <div className="shrink-0 w-12 h-12 bg-gray-200 shadow-sm rounded-md flex items-center justify-center font-bold text-gray-500 text-lg mt-1 z-10 relative">
+                    C
+                  </div>
+                  <div className="flex-1 pb-8 relative">
+                    <div className="absolute top-12 bottom-0 left-[-38px] w-0.5 bg-gray-200"></div>
+                    
+                    <h3 className="text-[17px] font-bold text-gray-900">Consultora independente</h3>
+                    <div className="text-[15px] text-gray-900 font-medium mt-0.5">Consultoria Ambiental</div>
+                    <div className="text-[15px] text-gray-500 mt-1">mar de 2012 - {isOptimized ? 'fev de 2019' : 'o momento'}</div>
+                    <div className="text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
+                    
+                    <div className="mt-4 text-[15px] text-gray-800 leading-relaxed">
+                      <Highlight 
+                        condition={!isOptimized || isOptimized} 
+                        isFixed={isOptimized} 
+                        hideFixedBorder={true}
+                        label={isOptimized ? "Ortografia Corrigida" : "Erro de Ortografia"} 
+                        description={isOptimized ? "Ajuste na escrita e período da consultoria limitando até a entrada na Hidrogest." : "Falta acento em 'Experiência'."}
+                        block
+                      >
+                        {isOptimized ? (
+                          <p>Experiência no gerenciamento de resíduos, áreas contaminadas e gestão de segurança de barragens.</p>
+                        ) : (
+                          <p><span className="text-red-600 font-bold bg-red-100 px-1 rounded">Experiencia</span> no gerenciamento de resíduos, áreas contaminadas e gestão de segurança de barragens.</p>
+                        )}
+                      </Highlight>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Experiência FEAM */}
+                <div className="flex gap-4">
+                  <div className="shrink-0 w-12 h-12 bg-green-700 shadow-sm rounded-md text-white flex items-center justify-center font-bold text-lg mt-1 z-10 relative">
+                    FEAM
+                  </div>
+                  <div className="flex-1 pb-2">
+                    
+                    <Highlight 
+                      condition={!isOptimized || isOptimized} 
+                      isFixed={isOptimized} 
+                      hideFixedBorder={true}
+                      label={isOptimized ? "Cargo e Período Consolidados" : "Cargos Desconexos"}
+                      description={isOptimized ? "Consolida os quase 30 anos de FEAM em um cargo agrupado e claro." : "O perfil atual lista os cargos da FEAM separadamente com datas sobrepostas (1980-2002) que causam confusão na linha do tempo."}
+                    >
+                      <h3 className="text-[17px] font-bold text-gray-900">
+                        {isOptimized ? "Diretora e Gerente de Projetos Ambientais" : "Diretora de Gestão de resíduos"}
+                      </h3>
+                    </Highlight>
+                    <div className="text-[15px] text-gray-900 font-medium mt-0.5">FEAM - Fundação Estadual de Meio Ambiente</div>
+                    <div className="text-[15px] text-gray-500 mt-1">{isOptimized ? '2002 - 2012' : 'mar de 2011 - abr de 2012'}</div>
+                    <div className="text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
+                    
+                    <div className="mt-4 text-[15px] text-gray-800 leading-relaxed">
+                      <Highlight 
+                        condition={!isOptimized || isOptimized} 
+                        isFixed={isOptimized}
+                        hideFixedBorder={true} 
+                        label={isOptimized ? "Descrição Otimizada e Rico em Detalhes" : "Descrição Fraca e com Letras Minúsculas"} 
+                        description={isOptimized ? "Organizado em tópicos, mostrando o impacto real nas políticas estaduais." : "Textos desorganizados, faltam letras maiúsculas em 'horizonte'."}
+                        block
+                      >
+                        {isOptimized ? (
+                          <div className="space-y-3">
+                            <p>Ao longo de 10 anos atuei em posições estratégicas de liderança na FEAM:</p>
+                            <ul className="list-disc pl-5 space-y-1.5 marker:text-gray-400">
+                              <li><strong>Diretora de Gestão de Resíduos (2011/2012):</strong> Coordenação do Programa de Gestão de Barragens de Resíduos de MG.</li>
+                              <li><strong>Gerente de Qualidade dos Solos (2007/2011):</strong> Coordenação do Programa Solos de Minas e Definição de Valores de Referência de Qualidade dos Solos (VRQs).</li>
+                              <li><strong>Assessora da Diretoria de Licenciamento - DIRIM (2004/2007)</strong> e Gerente de Qualidade das Águas e dos Solos (2002/2004).</li>
+                              <li>Liderança na implantação do Programa Estadual de Gerenciamento de Áreas Contaminadas e na elaboração da Cartilha para Reabilitação de áreas degradadas por lixões.</li>
+                            </ul>
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <p className="text-gray-500">Belo <span className="text-red-600 font-bold bg-red-100 px-1 rounded">horizonte</span></p>
+                            <p>Responsável pela gestão de barragens de resíduos, o gerenciamento de áreas contaminadas e resíduos sólidos</p>
+                          </div>
+                        )}
+                      </Highlight>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Inicializando o React no DOM
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
