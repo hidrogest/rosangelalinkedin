@@ -234,7 +234,8 @@
                   description={isOptimized ? "O banner corporativo da Hidrogest reforça a autoridade da marca no mercado." : "A capa atual não reflete o nível de excelência da profissional e da empresa."}
                   block
                 >
-                  <div className="h-48 w-full relative overflow-hidden group/banner bg-gray-100">
+                  {/* Container ajustado para proporções reais responsivas (h-28 celular, h-36 tablet, h-48 desktop) */}
+                  <div className="w-full h-28 sm:h-36 md:h-48 relative overflow-hidden group/banner bg-gray-100">
                     {/* Capa Antiga */}
                     <img 
                       src={bgBefore} 
@@ -249,27 +250,28 @@
                       className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isOptimized ? 'opacity-100' : 'opacity-0'}`}
                     />
 
-                    {/* Botão de Download */}
-                    <div className={`absolute top-4 right-4 transition-all duration-500 z-10 ${isOptimized ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
+                    {/* Botão de Download com visual adaptado ao mobile */}
+                    <div className={`absolute top-3 right-3 sm:top-4 sm:right-4 transition-all duration-500 z-10 ${isOptimized ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
                       <a 
                         href={bgAfterDownload} 
                         download="Capa_Hidrogest.jpg"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 bg-white/95 hover:bg-white text-[#0B3B59] px-4 py-2 rounded-full font-bold text-sm shadow-lg transition-all border border-transparent hover:border-[#0B3B59] hover:scale-105"
+                        className="flex items-center gap-1.5 sm:gap-2 bg-white/95 hover:bg-white text-[#0B3B59] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm shadow-lg transition-all border border-transparent hover:border-[#0B3B59] hover:scale-105"
                         title="Baixar nova capa"
                       >
                         <DownloadIcon size={16} />
-                        Baixar Capa
+                        <span className="hidden sm:inline">Baixar Capa</span>
+                        <span className="sm:hidden">Baixar</span>
                       </a>
                     </div>
                   </div>
                 </Highlight>
 
-                <div className="px-6 pb-6 relative">
+                <div className="px-4 sm:px-6 pb-6 relative">
                   
-                  {/* Foto de Perfil usando margem negativa para manter o fluxo do documento sem tampar o texto */}
-                  <div className="relative -mt-20 sm:-mt-24 mb-3 z-20 inline-block">
+                  {/* Foto de Perfil usando proporções precisas responsivas para garantir os 60% reais (-mt-16 celular, -mt-24 desktop) */}
+                  <div className="relative -mt-16 sm:-mt-20 md:-mt-24 mb-3 z-20 inline-block">
                     <Highlight 
                       condition={true} 
                       isFixed={isOptimized} 
@@ -277,7 +279,7 @@
                       label={isOptimized ? "Foto Padrão Corporativa" : "Foto Fora do Padrão Institucional"}
                       description={isOptimized ? "Iluminação clara, fundo neutro, veste condizente com a empresa." : "A foto atual, tirada em um evento, não transmite a padronização e a senioridade institucional esperadas de uma consultora Master."}
                     >
-                      <div className="w-36 h-36 sm:w-40 sm:h-40 rounded-full border-4 border-white bg-white shadow-md relative group/photo">
+                      <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full border-4 border-white bg-white shadow-md relative group/photo">
                         <img 
                           src={isOptimized ? imgAfter : imgBefore} 
                           alt="Foto de perfil" 
@@ -287,16 +289,16 @@
                         <div className="absolute inset-0 ring-1 ring-black/10 rounded-full pointer-events-none"></div>
                         
                         {/* Botão de Download da Foto de Perfil */}
-                        <div className={`absolute bottom-1 right-1 transition-all duration-500 z-30 ${isOptimized ? 'opacity-100 scale-100' : 'opacity-0 scale-50 pointer-events-none'}`}>
+                        <div className={`absolute bottom-0 right-0 sm:bottom-1 sm:right-1 transition-all duration-500 z-30 ${isOptimized ? 'opacity-100 scale-100' : 'opacity-0 scale-50 pointer-events-none'}`}>
                           <a 
                             href={imgAfterDownload} 
                             download="Foto_Perfil_Rosangela_Hidrogest.jpg"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center bg-white text-[#0B3B59] w-10 h-10 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 hover:scale-110 transition-all"
+                            className="flex items-center justify-center bg-white text-[#0B3B59] w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 hover:scale-110 transition-all"
                             title="Baixar foto de perfil"
                           >
-                            <DownloadIcon size={18} />
+                            <DownloadIcon size={16} />
                           </a>
                         </div>
                       </div>
@@ -312,12 +314,12 @@
                         label={isOptimized ? "Nome e Acentuação Corretos" : "Nome Incompleto e Sem Acento"}
                         description={isOptimized ? "Nome perfeitamente alinhado à apresentação formal da empresa, incluindo o sobrenome 'Machado'." : "Falta o acento em 'Rosângela' e o último sobrenome."}
                       >
-                        <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+                        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
                           {isOptimized ? "Rosângela Moreira Gurgel Machado" : "Rosangela Moreira Gurgel"}
                         </h1>
                       </Highlight>
 
-                      <div className="text-[17px] text-gray-700 mt-1.5 leading-snug">
+                      <div className="text-[16px] sm:text-[17px] text-gray-700 mt-1.5 leading-snug">
                         <Highlight 
                           condition={!isOptimized || isOptimized} 
                           isFixed={isOptimized} 
@@ -345,7 +347,7 @@
                           block
                         >
                           {isOptimized ? (
-                            <div className="flex flex-wrap gap-4 text-sm font-semibold text-[#0a66c2] bg-blue-50/50 p-2 rounded-lg border border-blue-100 inline-flex">
+                            <div className="flex flex-wrap gap-3 sm:gap-4 text-sm font-semibold text-[#0a66c2] bg-blue-50/50 p-2 rounded-lg border border-blue-100 inline-flex">
                               <span className="flex items-center gap-1.5 hover:underline cursor-pointer"><Mail size={16} /> rosangela.gurgel@yahoo.com.br</span>
                               <span className="flex items-center gap-1.5 hover:underline cursor-pointer"><Phone size={16} /> (31) 99122-9154</span>
                             </div>
@@ -388,7 +390,7 @@
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">Sobre</h2>
                 <div className="text-[15px] text-gray-800 space-y-4 leading-relaxed">
                   <Highlight 
@@ -411,15 +413,15 @@
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-8">Experiência</h2>
 
                 {/* Experiência HIDROGEST - Só aparece no Otimizado pois não tinha no antigo */}
                 {isOptimized && (
-                  <div className="flex gap-4">
-                    <img src={logoHidrogest} alt="Hidrogest" className="shrink-0 w-12 h-12 object-contain bg-white shadow-sm rounded-md border border-gray-100 mt-1 z-10 relative" />
+                  <div className="flex gap-3 sm:gap-4">
+                    <img src={logoHidrogest} alt="Hidrogest" className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 object-contain bg-white shadow-sm rounded-md border border-gray-100 mt-1 z-10 relative" />
                     <div className="flex-1 pb-8 relative">
-                      <div className="absolute top-12 bottom-0 left-[-38px] w-0.5 bg-gray-200"></div>
+                      <div className="absolute top-12 bottom-0 left-[-26px] sm:left-[-38px] w-0.5 bg-gray-200"></div>
                       
                       <Highlight 
                         condition={true} 
@@ -428,13 +430,13 @@
                         label="Nova Experiência Adicionada"
                         description="O perfil dela estava abandonado desde 2012. Agora mostra a atuação de peso na Hidrogest."
                       >
-                        <h3 className="text-[17px] font-bold text-gray-900">Engenheira Ambiental Master Sênior</h3>
+                        <h3 className="text-[16px] sm:text-[17px] font-bold text-gray-900">Engenheira Ambiental Master Sênior</h3>
                       </Highlight>
-                      <div className="text-[15px] text-gray-900 font-medium mt-0.5">HIDROGEST ENGENHARIA E CONSULTORIA LTDA.</div>
-                      <div className="text-[15px] text-gray-500 mt-1">fev de 2019 - o momento</div>
-                      <div className="text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
+                      <div className="text-[14px] sm:text-[15px] text-gray-900 font-medium mt-0.5">HIDROGEST ENGENHARIA E CONSULTORIA LTDA.</div>
+                      <div className="text-[14px] sm:text-[15px] text-gray-500 mt-1">fev de 2019 - o momento</div>
+                      <div className="text-[14px] sm:text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
                       
-                      <div className="mt-4 text-[15px] text-gray-800 leading-relaxed space-y-3">
+                      <div className="mt-4 text-[14px] sm:text-[15px] text-gray-800 leading-relaxed space-y-3">
                         <p>Atuação técnica sênior em grandes projetos de monitoramento e gestão ambiental. Principais atividades e coordenações:</p>
                         <ul className="list-disc pl-5 space-y-1.5 marker:text-gray-400">
                           <li>Elaboração de relatórios técnicos de monitoramento hidrossedimentológico do rio Paraopeba, abrangendo 13 estações e mais de 690 medições.</li>
@@ -451,19 +453,19 @@
                 )}
 
                 {/* Experiência CONSULTORIA */}
-                <div className="flex gap-4">
-                  <div className="shrink-0 w-12 h-12 bg-gray-200 shadow-sm rounded-md flex items-center justify-center font-bold text-gray-500 text-lg mt-1 z-10 relative">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 shadow-sm rounded-md flex items-center justify-center font-bold text-gray-500 text-lg mt-1 z-10 relative">
                     C
                   </div>
                   <div className="flex-1 pb-8 relative">
-                    <div className="absolute top-12 bottom-0 left-[-38px] w-0.5 bg-gray-200"></div>
+                    <div className="absolute top-12 bottom-0 left-[-26px] sm:left-[-38px] w-0.5 bg-gray-200"></div>
                     
-                    <h3 className="text-[17px] font-bold text-gray-900">Consultora independente</h3>
-                    <div className="text-[15px] text-gray-900 font-medium mt-0.5">Consultoria Ambiental</div>
-                    <div className="text-[15px] text-gray-500 mt-1">mar de 2012 - {isOptimized ? 'fev de 2019' : 'o momento'}</div>
-                    <div className="text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
+                    <h3 className="text-[16px] sm:text-[17px] font-bold text-gray-900">Consultora independente</h3>
+                    <div className="text-[14px] sm:text-[15px] text-gray-900 font-medium mt-0.5">Consultoria Ambiental</div>
+                    <div className="text-[14px] sm:text-[15px] text-gray-500 mt-1">mar de 2012 - {isOptimized ? 'fev de 2019' : 'o momento'}</div>
+                    <div className="text-[14px] sm:text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
                     
-                    <div className="mt-4 text-[15px] text-gray-800 leading-relaxed">
+                    <div className="mt-4 text-[14px] sm:text-[15px] text-gray-800 leading-relaxed">
                       <Highlight 
                         condition={!isOptimized || isOptimized} 
                         isFixed={isOptimized} 
@@ -483,8 +485,8 @@
                 </div>
 
                 {/* Experiência FEAM */}
-                <div className="flex gap-4">
-                  <div className="shrink-0 w-12 h-12 bg-green-700 shadow-sm rounded-md text-white flex items-center justify-center font-bold text-lg mt-1 z-10 relative">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-green-700 shadow-sm rounded-md text-white flex items-center justify-center font-bold text-lg mt-1 z-10 relative">
                     FEAM
                   </div>
                   <div className="flex-1 pb-2">
@@ -496,15 +498,15 @@
                       label={isOptimized ? "Cargo e Período Consolidados" : "Cargos Desconexos"}
                       description={isOptimized ? "Consolida os quase 30 anos de FEAM em um cargo agrupado e claro." : "O perfil atual lista os cargos da FEAM separadamente com datas sobrepostas (1980-2002) que causam confusão na linha do tempo."}
                     >
-                      <h3 className="text-[17px] font-bold text-gray-900">
+                      <h3 className="text-[16px] sm:text-[17px] font-bold text-gray-900">
                         {isOptimized ? "Diretora e Gerente de Projetos Ambientais" : "Diretora de Gestão de resíduos"}
                       </h3>
                     </Highlight>
-                    <div className="text-[15px] text-gray-900 font-medium mt-0.5">FEAM - Fundação Estadual de Meio Ambiente</div>
-                    <div className="text-[15px] text-gray-500 mt-1">{isOptimized ? '2002 - 2012' : 'mar de 2011 - abr de 2012'}</div>
-                    <div className="text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
+                    <div className="text-[14px] sm:text-[15px] text-gray-900 font-medium mt-0.5">FEAM - Fundação Estadual de Meio Ambiente</div>
+                    <div className="text-[14px] sm:text-[15px] text-gray-500 mt-1">{isOptimized ? '2002 - 2012' : 'mar de 2011 - abr de 2012'}</div>
+                    <div className="text-[14px] sm:text-[15px] text-gray-500">Belo Horizonte, Minas Gerais, Brasil</div>
                     
-                    <div className="mt-4 text-[15px] text-gray-800 leading-relaxed">
+                    <div className="mt-4 text-[14px] sm:text-[15px] text-gray-800 leading-relaxed">
                       <Highlight 
                         condition={!isOptimized || isOptimized} 
                         isFixed={isOptimized}
