@@ -234,8 +234,8 @@
                   description={isOptimized ? "O banner corporativo da Hidrogest reforça a autoridade da marca no mercado." : "A capa atual não reflete o nível de excelência da profissional e da empresa."}
                   block
                 >
-                  {/* Container ajustado para proporções reais responsivas (h-28 celular, h-36 tablet, h-48 desktop) */}
-                  <div className="w-full h-28 sm:h-36 md:h-48 relative overflow-hidden group/banner bg-gray-100">
+                  {/* Container ajustado com proporção de tela matemática (aspect-ratio) para nunca cortar a capa, seja no celular ou desktop */}
+                  <div className="w-full relative overflow-hidden group/banner bg-gray-100" style={{ aspectRatio: '10/3', minHeight: '120px' }}>
                     {/* Capa Antiga */}
                     <img 
                       src={bgBefore} 
@@ -270,7 +270,7 @@
 
                 <div className="px-4 sm:px-6 pb-6 relative">
                   
-                  {/* Foto de Perfil usando proporções precisas responsivas para garantir os 60% reais (-mt-16 celular, -mt-24 desktop) */}
+                  {/* Foto de Perfil com margem adaptada para a nova proporção da capa (-mt-16 a -mt-24) garantindo o corte perfeito */}
                   <div className="relative -mt-16 sm:-mt-20 md:-mt-24 mb-3 z-20 inline-block">
                     <Highlight 
                       condition={true} 
